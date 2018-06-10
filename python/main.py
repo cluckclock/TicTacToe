@@ -24,14 +24,56 @@ def isFull():
             return False
     return True
 
-#Run the computer's turn. Decides where to mark with random.shuffle
-def compTurn():
+#Level 0 AI. Other AI levels funnel down to this function
+def chooseRandom(symbol):
     blankSpaces = list()
     for square in range(9):
         if board[square] == ' ':
             blankSpaces.append(square)
     random.shuffle(blankSpaces)
-    board [blankSpaces[0]] = player2
+    board [blankSpaces[0]] = symbol
+
+#Used in AI levels 1 and above. Can be used simply and complex
+def checkStrat(symbol, min, strat):
+    count = 0
+    cells = wins[strat]
+
+    for cell in cells:
+        if board[cell] == symbol:
+            count+= 1
+    if count >= min:
+        for cell in cells:
+            if board[cell] == ' ':
+                return cell
+    return -1
+
+#Type of AI strategy. Would be in compTurn, but Python doesn't support nested
+#methods for some reason...
+def defendStrategy(min, toCheck):
+    for i in range(len(wins)):
+        goodCell = checkStrat(toCheck, min, i)
+        if goodCell != -1:
+            board[goodCell] = player2
+            return "success"
+
+#Run the computer's turn. Decides where to mark with random.shuffle
+AILevel = 0
+def compTurn():
+    if AILevel == 0:
+        chooseRandom(player2)
+    elif AILevel == 1:
+        if defendStrategy(1, player2) == "success":
+            return
+        chooseRandom(player2)
+    elif AILevel == 2:
+        if defendStrategy(2, player2) == "success":
+            return
+        elif defendStrategy(2, player1) == "success":
+            return
+        elif defendStrategy(1, player2) == "success":
+            return
+        else:
+            chooseRandom(player2)
 
 #Run the player's turn. Asks the player which cell to mark by number (Starting at 0)
 def playerTurn(symbol):
@@ -104,6 +146,13 @@ def onePlayer():
             player2 = "X"
             acceptable = True
         elif player1 == "X":
+            acceptable = True
+
+    global AILevel
+    acceptable = False
+    while not acceptable:
+        AILevel = int(input("AI difficulty(0 or 1 or 2): "))
+        if AILevel >= 0 and AILevel <= 2:
             acceptable = True
 
     inGame()
