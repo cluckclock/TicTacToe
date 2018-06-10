@@ -30,7 +30,7 @@ def compTurn():
     for square in range(9):
         if board[square] == ' ':
             blankSpaces.append(square)
-    shuffle(blankSpaces)
+    random.shuffle(blankSpaces)
     board [blankSpaces[0]] = player2
 
 #Run the player's turn. Asks the player which cell to mark by number (Starting at 0)
@@ -50,20 +50,17 @@ def playerTurn(symbol):
     board[target] = symbol
 
 #Check whether the symbol inputted is three in a row somewhere on the board.
-#Optimize?
+wins = [ [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6] ]
 def hasWon(symbol):
     won = False
-    if  (board[0] == symbol and board[1] == symbol and board[2] == symbol) or \
-        (board[3] == symbol and board[4] == symbol and board[5] == symbol) or \
-        (board[6] == symbol and board[7] == symbol and board[8] == symbol) or \
-        \
-        (board[0] == symbol and board[4] == symbol and board[8] == symbol) or \
-        (board[6] == symbol and board[4] == symbol and board[2] == symbol) or \
-        \
-        (board[0] == symbol and board[3] == symbol and board[6] == symbol) or \
-        (board[1] == symbol and board[4] == symbol and board[7] == symbol) or \
-        (board[2] == symbol and board[5] == symbol and board[8] == symbol):
-        won = True
+    for strat in wins:
+        count = 0
+        for cell in strat:
+            if board[cell] == symbol:
+                count+= 1
+        if count == 3:
+            won = True
+            return won
     return won
 
 name1 = "Player 1"
