@@ -24,14 +24,14 @@ def isFull():
             return False
     return True
 
-#Run the computer's turn. Decides where to mark with random.randint
+#Run the computer's turn. Decides where to mark with random.shuffle
 def compTurn():
-    blankSpaces = dict()
-    for i in range(9):
-        if board[i] == ' ':
-            blankSpaces[len(blankSpaces)] = i
-    #print(len(blankSpaces))
-    board [ blankSpaces [ random.randint ( 0, len ( blankSpaces) - 1 ) ] ] = player2
+    blankSpaces = list()
+    for square in range(9):
+        if board[square] == ' ':
+            blankSpaces.append(square)
+    shuffle(blankSpaces)
+    board [blankSpaces[0]] = player2
 
 #Run the player's turn. Asks the player which cell to mark by number (Starting at 0)
 def playerTurn(symbol):
