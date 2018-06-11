@@ -201,16 +201,32 @@ def inGame():
         else:
             print("Somehow, nobody won. Extra pie for the Python!")
 
-def main():
-    global mode
+    if input("New Game?") == "yes":
+        newGame()
+    else:
+        print("Play again!")
+        exit()
 
-    print("Tic-Tac-Toe")
-    printBoard()
+def wipeBoard():
+    for i in range(len(board)):
+        board[i] = " "
+
+def newGame():
+    wipeBoard()
     mode = input("2-player game or against a computer? (2p/cp) ")
     if mode == '2p':
         twoPlayers()
     else:
         onePlayer()
+
+def main():
+    global mode
+
+    print("Tic-Tac-Toe")
+    printBoard()
+
+    newGame()
+
 
 if __name__ == '__main__':
     main()
