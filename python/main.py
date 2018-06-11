@@ -201,7 +201,7 @@ def inGame():
         else:
             print("Somehow, nobody won. Extra pie for the Python!")
 
-    if input("New Game?") == "yes":
+    if input("Play again?") == 'yes':
         newGame()
     else:
         print("Play again!")
@@ -209,10 +209,11 @@ def inGame():
 
 def wipeBoard():
     for i in range(len(board)):
-        board[i] = " "
+        board[i] = ' '
 
 def newGame():
     wipeBoard()
+
     mode = input("2-player game or against a computer? (2p/cp) ")
     if mode == '2p':
         twoPlayers()
@@ -224,7 +225,6 @@ def main():
 
     print("Tic-Tac-Toe")
     printBoard()
-
     newGame()
 
 
