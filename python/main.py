@@ -56,24 +56,75 @@ def defendStrategy(min, toCheck):
             board[goodCell] = player2
             return "success"
 
+def advCheckStrats(min, toCheck):
+    goodCells = list()
+    for strategy in range(len(wins)):
+        firstCell = checkStrat(toCheck, min, strategy)
+        if firstCell != -1:
+            goodCells.append(firstCell)
+            board[firstCell] = 'Z'
+
+            secondCell = checkStrat(toCheck, min, strategy)
+            board[firstCell] = ' '
+            if secondCell != -1:
+                goodCells.append(firstCell)
+    return goodCells
+
+#Computer strategy check for levels 2 and 3
+def tryWin():
+    if defendStrategy(2, player2) == "success":
+        return
+    else:
+        return 1
+
+#Find cell that is in list the most
+def calcHighest(cells):
+    boardStrat = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    for i in range(len(cells)):
+        boardStrat[cells[i]] += 1
+
+    topScorer = 0
+    topScore = boardStrat[0]
+    i = 1
+    for i in range(9):
+        if boardStrat[i] >= topScore:
+            topScore = boardStrat[i]
+            topScorer = i
+    return topScorer
+
 #Run the computer's turn. Decides where to mark with random.shuffle
 AILevel = 0
 def compTurn():
+
     if AILevel == 0:
         chooseRandom(player2)
+
     elif AILevel == 1:
         if defendStrategy(1, player2) == "success":
             return
         chooseRandom(player2)
+
     elif AILevel == 2:
-        if defendStrategy(2, player2) == "success":
-            return
-        elif defendStrategy(2, player1) == "success":
-            return
-        elif defendStrategy(1, player2) == "success":
-            return
-        else:
-            chooseRandom(player2)
+        if tryWin() == 1:
+            if defendStrategy(2, player1) == "success":
+                return
+            elif defendStrategy(1, player2) == "success":
+                return
+            else:
+                chooseRandom(player2)
+
+    elif AILevel >= 3:
+        if tryWin() == 1:
+            goodCells = advCheckStrats(2, player1)
+            if goodCells != []:
+                print('hullo!')
+                board[calcHighest(goodCells)] = player2
+            else:
+                goodCells = advCheckStrats(1, player2)
+                if goodCells != []:
+                    board[calcHighest(goodCells)] = player2
+                else:
+                    chooseRandom(player2)
 
 #Run the player's turn. Asks the player which cell to mark by number (Starting at 0)
 def playerTurn(symbol):
@@ -149,11 +200,7 @@ def onePlayer():
             acceptable = True
 
     global AILevel
-    acceptable = False
-    while not acceptable:
-        AILevel = int(input("AI difficulty(0 or 1 or 2): "))
-        if AILevel >= 0 and AILevel <= 2:
-            acceptable = True
+    AILevel = int(input("AI difficulty(0, 1, 2, or 3): "))
 
     inGame()
 
@@ -201,7 +248,7 @@ def inGame():
         else:
             print("Somehow, nobody won. Extra pie for the Python!")
 
-    if input("Play again?") == 'yes':
+    if input("New Game?") == 'yes':
         newGame()
     else:
         print("Play again!")
